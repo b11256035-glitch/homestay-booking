@@ -1,0 +1,319 @@
+/* ============================================================
+   山宿 Homestay — 共用樣式
+   調性：大地色 + 森林綠 + 米白，溫暖度假質感
+   ============================================================ */
+
+:root {
+  --c-bg: #faf6ef;            /* 米白主背景 */
+  --c-bg-warm: #f3ebd9;       /* 暖米色 */
+  --c-cream: #ede1c7;         /* 奶油 */
+  --c-forest: #2d4a3e;        /* 森林綠 (主色) */
+  --c-forest-light: #4a6b5b;
+  --c-moss: #7a8a6f;          /* 苔綠 */
+  --c-clay: #c87a4a;          /* 陶土橘 (重點色) */
+  --c-clay-dark: #a85f33;
+  --c-wood: #8b6b47;          /* 木頭色 */
+  --c-ink: #2a241d;           /* 深咖文字 */
+  --c-ink-soft: #5a4f43;
+  --c-line: #d8c9ac;          /* 分隔線 */
+  --c-error: #c44536;
+  --c-success: #6a8d5b;
+
+  --font-display: "Noto Serif TC", "Songti TC", "PMingLiU", serif;
+  --font-body: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+
+  --shadow-soft: 0 2px 8px rgba(45, 74, 62, 0.08);
+  --shadow-card: 0 6px 24px rgba(45, 74, 62, 0.10);
+  --shadow-deep: 0 12px 40px rgba(45, 74, 62, 0.18);
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--c-bg);
+  color: var(--c-ink);
+  line-height: 1.7;
+  min-height: 100vh;
+  /* 細微紋理感 */
+  background-image:
+    radial-gradient(circle at 20% 10%, rgba(200, 122, 74, 0.04) 0%, transparent 40%),
+    radial-gradient(circle at 80% 80%, rgba(45, 74, 62, 0.05) 0%, transparent 40%);
+}
+
+h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; color: var(--c-forest); }
+
+a { color: var(--c-clay-dark); text-decoration: none; transition: color .2s; }
+a:hover { color: var(--c-forest); }
+
+/* ===== Navbar ===== */
+.navbar {
+  background: rgba(250, 246, 239, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--c-line);
+  padding: 18px 40px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.navbar .logo {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--c-forest);
+  letter-spacing: 2px;
+}
+.navbar .logo span { color: var(--c-clay); font-style: italic; }
+.navbar nav a {
+  margin-left: 28px;
+  font-size: 15px;
+  color: var(--c-ink);
+  position: relative;
+  padding-bottom: 4px;
+}
+.navbar nav a::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: 0;
+  width: 0;
+  height: 2px;
+  background: var(--c-clay);
+  transition: width .3s;
+}
+.navbar nav a:hover::after { width: 100%; }
+.navbar nav a:hover { color: var(--c-forest); }
+
+/* ===== Buttons ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .2s ease;
+  text-decoration: none;
+  letter-spacing: 1px;
+}
+.btn-primary {
+  background: var(--c-forest);
+  color: var(--c-bg);
+}
+.btn-primary:hover {
+  background: var(--c-forest-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card);
+}
+.btn-accent {
+  background: var(--c-clay);
+  color: white;
+}
+.btn-accent:hover {
+  background: var(--c-clay-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card);
+}
+.btn-outline {
+  background: transparent;
+  color: var(--c-forest);
+  border: 1.5px solid var(--c-forest);
+}
+.btn-outline:hover {
+  background: var(--c-forest);
+  color: var(--c-bg);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--c-ink-soft);
+  padding: 8px 16px;
+}
+.btn-ghost:hover { color: var(--c-clay); }
+.btn-danger {
+  background: var(--c-error);
+  color: white;
+}
+.btn-danger:hover { background: #a13427; }
+.btn-sm { padding: 8px 18px; font-size: 13px; }
+
+/* ===== Forms ===== */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.field label {
+  font-size: 13px;
+  color: var(--c-ink-soft);
+  letter-spacing: 1px;
+  font-weight: 500;
+}
+.field input, .field select, .field textarea {
+  padding: 12px 14px;
+  border: 1.5px solid var(--c-line);
+  border-radius: var(--radius-sm);
+  background: var(--c-bg);
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--c-ink);
+  transition: border-color .2s, box-shadow .2s;
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  outline: none;
+  border-color: var(--c-forest);
+  box-shadow: 0 0 0 3px rgba(45, 74, 62, 0.1);
+}
+.field textarea { resize: vertical; min-height: 80px; }
+
+/* ===== Cards ===== */
+.card {
+  background: var(--c-bg);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: var(--shadow-soft);
+  border: 1px solid var(--c-line);
+}
+
+/* ===== 容器 ===== */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+.container-narrow {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+/* ===== 區塊標題 ===== */
+.section-title {
+  font-size: 36px;
+  margin-bottom: 8px;
+  letter-spacing: 2px;
+}
+.section-subtitle {
+  color: var(--c-ink-soft);
+  font-size: 14px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+/* ===== Toast 訊息 ===== */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--c-forest);
+  color: var(--c-bg);
+  padding: 14px 28px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-deep);
+  z-index: 9999;
+  opacity: 0;
+  transition: all .35s ease;
+  font-size: 14px;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.toast.error { background: var(--c-error); }
+.toast.success { background: var(--c-success); }
+
+/* ===== Modal ===== */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(42, 36, 29, 0.55);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+.modal-backdrop.show { display: flex; animation: fadeIn .25s ease; }
+.modal {
+  background: var(--c-bg);
+  border-radius: var(--radius-lg);
+  padding: 36px;
+  max-width: 560px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-deep);
+  animation: slideUp .3s ease;
+}
+.modal h2 { margin-bottom: 8px; font-size: 26px; }
+.modal-subtitle { color: var(--c-ink-soft); margin-bottom: 24px; font-size: 14px; }
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== Loading ===== */
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--c-line);
+  border-top-color: var(--c-forest);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+  margin: 40px auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--c-ink-soft);
+}
+.empty-state h3 { color: var(--c-forest); margin-bottom: 8px; }
+
+/* ===== 標籤 ===== */
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+.badge-success { background: #e3eedc; color: var(--c-success); }
+.badge-warning { background: #f5e5c8; color: #a87c2c; }
+.badge-error { background: #f5d8d3; color: var(--c-error); }
+.badge-info { background: #d8e2dc; color: var(--c-forest); }
+
+/* ===== 響應式 ===== */
+@media (max-width: 768px) {
+  .navbar { padding: 14px 20px; flex-wrap: wrap; }
+  .navbar nav a { margin-left: 14px; font-size: 13px; }
+  .section-title { font-size: 26px; }
+  .container { padding: 24px 16px; }
+  .modal { padding: 24px; }
+}
