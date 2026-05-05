@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>山宿 Homestay — 與山林共眠的小日子</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ===== 首頁專屬 ===== */
+    .hero {
+      position: relative;
+      min-height: 78vh;
+      display: flex;
+      align-items: center;
+      padding: 80px 40px;
+      overflow: hidden;
+      background:
+        linear-gradient(135deg, rgba(45, 74, 62, 0.85) 0%, rgba(45, 74, 62, 0.55) 100%),
+        url('https://images.unsplash.com/photo-1587061949409-02df41d5e562?w=1600&q=80') center/cover;
+    }
+    .hero::before {
+      /* 細紋質感 */
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0 1px, transparent 1px 4px);
+      pointer-events: none;
+    }
+    .hero-content {
+      position: relative;
+      max-width: 720px;
+      color: var(--c-bg);
+      animation: heroFade 1s ease;
+    }
+    @keyframes heroFade {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .hero .eyebrow {
+      font-size: 13px;
+      letter-spacing: 6px;
+      color: var(--c-cream);
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    .hero h1 {
+      font-size: 64px;
+      color: var(--c-bg);
+      line-height: 1.15;
+      margin-bottom: 20px;
+      letter-spacing: 4px;
+    }
+    .hero h1 em {
+      color: var(--c-cream);
+      font-style: italic;
+      font-weight: 500;
+    }
+    .hero p {
+      font-size: 17px;
+      max-width: 520px;
+      margin-bottom: 36px;
+      line-height: 1.9;
+      color: rgba(250, 246, 239, 0.92);
+    }
+
+    /* 查空房卡片：跨越 hero 與下個區塊 */
+    .search-card {
+      max-width: 1100px;
+      margin: -60px auto 60px;
+      background: var(--c-bg);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      box-shadow: var(--shadow-deep);
+      position: relative;
+      z-index: 5;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr 1fr auto;
+      gap: 16px;
+      align-items: end;
+      border: 1px solid var(--c-line);
+    }
+    .search-card .field { margin-bottom: 0; }
+    .search-card .btn {
+      padding: 14px 32px;
+      height: 48px;
+      white-space: nowrap;
+    }
+
+    /* 房型 grid */
+    .rooms-section { padding: 40px 0 80px; }
+    .rooms-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 28px;
+      margin-top: 40px;
+    }
+    .room-card {
+      background: var(--c-bg);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid var(--c-line);
+      transition: transform .3s ease, box-shadow .3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .room-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-deep);
+    }
+    .room-card .room-img {
+      width: 100%;
+      height: 220px;
+      background: var(--c-cream);
+      object-fit: cover;
+      display: block;
+    }
+    .room-card-body { padding: 24px; flex: 1; display: flex; flex-direction: column; }
+    .room-card h3 { font-size: 22px; margin-bottom: 4px; }
+    .room-meta {
+      color: var(--c-ink-soft);
+      font-size: 13px;
+      margin-bottom: 14px;
+      letter-spacing: 1px;
+    }
+    .room-desc {
+      color: var(--c-ink);
+      font-size: 14px;
+      line-height: 1.7;
+      flex: 1;
+      margin-bottom: 20px;
+    }
+    .room-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 18px;
+      border-top: 1px dashed var(--c-line);
+    }
+    .room-price {
+      font-family: var(--font-display);
+      color: var(--c-clay);
+      font-size: 24px;
+      font-weight: 600;
+    }
+    .room-price small { font-size: 13px; color: var(--c-ink-soft); font-weight: 400; }
+
+    .availability-tag {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      backdrop-filter: blur(8px);
+    }
+    .room-card { position: relative; }
+    .tag-available { background: rgba(106, 141, 91, 0.92); color: white; }
+    .tag-full { background: rgba(196, 69, 54, 0.92); color: white; }
+
+    /* 引言區塊 */
+    .quote-section {
+      padding: 80px 40px;
+      text-align: center;
+      background: var(--c-bg-warm);
+      border-top: 1px solid var(--c-line);
+      border-bottom: 1px solid var(--c-line);
+    }
+    .quote-section blockquote {
+      max-width: 720px;
+      margin: 0 auto;
+      font-family: var(--font-display);
+      font-size: 28px;
+      line-height: 1.7;
+      color: var(--c-forest);
+      font-style: italic;
+      position: relative;
+    }
+    .quote-section blockquote::before {
+      content: "「";
+      font-size: 80px;
+      color: var(--c-clay);
+      opacity: 0.3;
+      position: absolute;
+      top: -40px;
+      left: -20px;
+    }
+    .quote-section cite {
+      display: block;
+      margin-top: 24px;
+      font-style: normal;
+      font-size: 13px;
+      letter-spacing: 4px;
+      color: var(--c-ink-soft);
+    }
+
+    /* AI 客服浮動按鈕 */
+    .chat-fab {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--c-clay);
+      color: white;
+      border: none;
+      cursor: pointer;
+      box-shadow: var(--shadow-deep);
+      font-size: 24px;
+      z-index: 50;
+      transition: transform .2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .chat-fab:hover { transform: scale(1.1) rotate(8deg); background: var(--c-clay-dark); }
+
+    .chat-window {
+      position: fixed;
+      bottom: 110px;
+      right: 30px;
+      width: 360px;
+      max-width: calc(100vw - 60px);
+      height: 480px;
+      background: var(--c-bg);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-deep);
+      display: none;
+      flex-direction: column;
+      z-index: 51;
+      overflow: hidden;
+      border: 1px solid var(--c-line);
+    }
+    .chat-window.show { display: flex; animation: slideUp .3s ease; }
+    .chat-header {
+      background: var(--c-forest);
+      color: var(--c-bg);
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .chat-header h4 { color: var(--c-bg); font-size: 16px; margin: 0; }
+    .chat-header small { color: var(--c-cream); font-size: 12px; }
+    .chat-close { background: none; border: none; color: var(--c-bg); cursor: pointer; font-size: 22px; }
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .chat-msg { padding: 10px 14px; border-radius: 14px; max-width: 85%; font-size: 14px; line-height: 1.6; }
+    .chat-msg.bot { background: var(--c-bg-warm); color: var(--c-ink); align-self: flex-start; border-bottom-left-radius: 4px; }
+    .chat-msg.user { background: var(--c-forest); color: var(--c-bg); align-self: flex-end; border-bottom-right-radius: 4px; }
+    .chat-msg.typing { color: var(--c-ink-soft); font-style: italic; }
+    .chat-input-row {
+      display: flex;
+      gap: 8px;
+      padding: 12px;
+      border-top: 1px solid var(--c-line);
+      background: var(--c-bg);
+    }
+    .chat-input-row input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid var(--c-line);
+      border-radius: 100px;
+      font-size: 14px;
+      font-family: var(--font-body);
+    }
+    .chat-input-row input:focus { outline: none; border-color: var(--c-forest); }
+    .chat-input-row button {
+      background: var(--c-clay);
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    /* footer */
+    footer {
+      background: var(--c-forest);
+      color: var(--c-cream);
+      padding: 40px;
+      text-align: center;
+      letter-spacing: 2px;
+    }
+    footer .logo {
+      font-family: var(--font-display);
+      font-size: 24px;
+      color: var(--c-bg);
+      margin-bottom: 8px;
+      display: block;
+    }
+    footer small { font-size: 12px; opacity: 0.7; display: block; margin-top: 12px; }
+
+    @media (max-width: 768px) {
+      .hero { padding: 60px 24px; min-height: auto; }
+      .hero h1 { font-size: 38px; letter-spacing: 2px; }
+      .search-card { grid-template-columns: 1fr; gap: 12px; padding: 24px; }
+      .quote-section blockquote { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <a href="index.html" class="logo">山宿 <span>Homestay</span></a>
+    <nav>
+      <a href="#rooms">房型介紹</a>
+      <a href="my-orders.html">我的訂單</a>
+      <a href="admin-login.html">管理者</a>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="eyebrow">— 山林裡的小日子 —</div>
+      <h1>與森林為鄰<br>聽風 <em>住一晚</em></h1>
+      <p>
+        座落在中央山脈邊陲，木造的房舍、慢慢的早晨、鳥鳴與檜木香氣。<br>
+        這裡沒有城市的時間表，只有與自然同步的呼吸節奏。
+      </p>
+      <a href="#rooms" class="btn btn-accent">瀏覽房型 →</a>
+    </div>
+  </section>
+
+  <!-- 查空房 -->
+  <div class="search-card">
+    <div class="field">
+      <label>入住日期</label>
+      <input type="date" id="checkInDate">
+    </div>
+    <div class="field">
+      <label>退房日期</label>
+      <input type="date" id="checkOutDate">
+    </div>
+    <div class="field">
+      <label>人數</label>
+      <select id="guestCount">
+        <option value="1">1 人</option>
+        <option value="2" selected>2 人</option>
+        <option value="3">3 人</option>
+        <option value="4">4 人</option>
+        <option value="6">6 人以上</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>房型篩選</label>
+      <select id="roomFilter">
+        <option value="">全部</option>
+      </select>
+    </div>
+    <button class="btn btn-primary" id="btnSearch">查詢空房</button>
+  </div>
+
+  <!-- 房型列表 -->
+  <section class="rooms-section" id="rooms">
+    <div class="container">
+      <div style="text-align: center; margin-bottom: 16px;">
+        <div class="section-subtitle">Our Rooms</div>
+        <h2 class="section-title">挑一間 喜歡的房</h2>
+      </div>
+      <div id="roomsGrid" class="rooms-grid">
+        <div class="spinner"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 引言 -->
+  <section class="quote-section">
+    <blockquote>
+      最好的旅行 不是去到多遠的地方<br>
+      而是 在山林裡 找回一個慢下來的自己
+    </blockquote>
+    <cite>— 山宿主人 留</cite>
+  </section>
+
+  <!-- 訂房 Modal -->
+  <div class="modal-backdrop" id="bookingModal">
+    <div class="modal">
+      <h2 id="modalRoomName">預訂房型</h2>
+      <p class="modal-subtitle" id="modalRoomMeta"></p>
+      <div class="field">
+        <label>姓名</label>
+        <input type="text" id="bookerName" placeholder="王小明">
+      </div>
+      <div class="field">
+        <label>手機</label>
+        <input type="tel" id="bookerPhone" placeholder="0912-345-678">
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="bookerEmail" placeholder="example@mail.com">
+      </div>
+      <div class="field">
+        <label>入住人數</label>
+        <input type="number" id="bookerGuests" min="1" max="10" value="2">
+      </div>
+      <div class="field">
+        <label>備註 (選填)</label>
+        <textarea id="bookerNotes" placeholder="特殊需求、抵達時間..."></textarea>
+      </div>
+      <div style="background: var(--c-bg-warm); padding: 16px; border-radius: 10px; margin-top: 8px;">
+        <div style="display: flex; justify-content: space-between; font-size: 14px; color: var(--c-ink-soft);">
+          <span>入住 <strong id="sumCheckIn"></strong> 至 <strong id="sumCheckOut"></strong></span>
+          <span><strong id="sumNights">0</strong> 晚</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-top: 8px; font-family: var(--font-display); font-size: 22px; color: var(--c-forest);">
+          <span>合計</span>
+          <span>NT$ <span id="sumTotal">0</span></span>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="btnCancelBooking">取消</button>
+        <button class="btn btn-accent" id="btnConfirmBooking">確認訂房</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 訂房成功 Modal -->
+  <div class="modal-backdrop" id="successModal">
+    <div class="modal" style="text-align: center;">
+      <div style="font-size: 48px;">🌿</div>
+      <h2>訂房成功</h2>
+      <p class="modal-subtitle">期待與您相遇於山宿</p>
+      <p style="background: var(--c-bg-warm); padding: 20px; border-radius: 12px; margin: 20px 0;">
+        您的訂單編號<br>
+        <strong id="successOrderId" style="font-family: var(--font-display); font-size: 28px; color: var(--c-clay); letter-spacing: 4px; display: block; margin-top: 8px;"></strong>
+        <small style="color: var(--c-ink-soft); display: block; margin-top: 8px;">請保存此編號，可用於查詢或取消訂單</small>
+      </p>
+      <div class="modal-actions" style="justify-content: center;">
+        <a href="my-orders.html" class="btn btn-outline">查看我的訂單</a>
+        <button class="btn btn-primary" id="btnSuccessClose">完成</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI 客服 -->
+  <button class="chat-fab" id="chatFab" title="智慧客服">💬</button>
+  <div class="chat-window" id="chatWindow">
+    <div class="chat-header">
+      <div>
+        <h4>山宿小幫手</h4>
+        <small>由 Gemini AI 提供</small>
+      </div>
+      <button class="chat-close" id="chatClose">×</button>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="chat-msg bot">您好！我是山宿小幫手 🌿 有任何關於住宿、交通或設備的問題都可以問我。</div>
+    </div>
+    <div class="chat-input-row">
+      <input type="text" id="chatInput" placeholder="輸入問題..." maxlength="200">
+      <button id="chatSend">→</button>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <footer>
+    <span class="logo">山宿 Homestay</span>
+    <div>南投縣山林深處 · 與自然慢慢生活</div>
+    <small>© 2026 山宿 Homestay · AI 跨域應用與案例 期末專案 Demo</small>
+  </footer>
+
+  <!-- Firebase -->
+  <script type="module" src="js/firebase-config.js"></script>
+  <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/ai-chat.js"></script>
+</body>
+</html>

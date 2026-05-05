@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>後台管理 — 山宿 Homestay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ===== 後台佈局 ===== */
+    body { background: var(--c-bg-warm); }
+    .admin-wrap { display: flex; min-height: 100vh; }
+
+    .sidebar {
+      width: 240px;
+      background: var(--c-forest);
+      color: var(--c-cream);
+      padding: 28px 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+    .sidebar .brand {
+      padding: 0 28px 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 16px;
+    }
+    .sidebar .brand .logo {
+      font-family: var(--font-display);
+      font-size: 22px;
+      color: var(--c-bg);
+      letter-spacing: 3px;
+      display: block;
+    }
+    .sidebar .brand .logo span { color: var(--c-clay); font-style: italic; }
+    .sidebar .brand small { font-size: 11px; letter-spacing: 3px; color: var(--c-cream); opacity: 0.7; }
+
+    .sidebar nav a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 28px;
+      color: var(--c-cream);
+      text-decoration: none;
+      font-size: 14px;
+      letter-spacing: 1px;
+      transition: all .2s;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+    }
+    .sidebar nav a:hover { background: rgba(255,255,255,0.05); color: var(--c-bg); }
+    .sidebar nav a.active {
+      background: rgba(200, 122, 74, 0.15);
+      color: var(--c-bg);
+      border-left-color: var(--c-clay);
+    }
+    .sidebar nav a span.icon { font-size: 18px; }
+
+    .sidebar .logout {
+      position: absolute;
+      bottom: 20px;
+      left: 28px;
+      right: 28px;
+      padding: 10px;
+      background: rgba(255,255,255,0.06);
+      border: none;
+      color: var(--c-cream);
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-size: 13px;
+      letter-spacing: 1px;
+    }
+    .sidebar .logout:hover { background: var(--c-clay); color: white; }
+
+    /* 主內容 */
+    .main { flex: 1; padding: 36px 40px; max-width: calc(100vw - 240px); }
+    .page-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      margin-bottom: 28px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .page-title { font-size: 32px; letter-spacing: 2px; }
+    .page-subtitle { color: var(--c-ink-soft); font-size: 13px; letter-spacing: 3px; text-transform: uppercase; }
+
+    /* 統計卡片 */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .stat-card {
+      background: var(--c-bg);
+      padding: 20px 24px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--c-line);
+      box-shadow: var(--shadow-soft);
+    }
+    .stat-card .label { color: var(--c-ink-soft); font-size: 12px; letter-spacing: 2px; }
+    .stat-card .value {
+      font-family: var(--font-display);
+      font-size: 32px;
+      color: var(--c-forest);
+      margin-top: 4px;
+    }
+    .stat-card.accent .value { color: var(--c-clay); }
+
+    /* tab pages */
+    .tab-page { display: none; }
+    .tab-page.active { display: block; animation: fadeIn .3s ease; }
+
+    /* 表格 */
+    .data-table {
+      width: 100%;
+      background: var(--c-bg);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--c-line);
+      box-shadow: var(--shadow-soft);
+      border-collapse: collapse;
+    }
+    .data-table th {
+      background: var(--c-cream);
+      padding: 14px 16px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: var(--c-ink-soft);
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--c-line);
+    }
+    .data-table td {
+      padding: 16px;
+      font-size: 14px;
+      border-bottom: 1px solid var(--c-line);
+    }
+    .data-table tr:hover { background: var(--c-bg-warm); }
+    .data-table tr:last-child td { border-bottom: none; }
+
+    .table-img {
+      width: 50px; height: 50px;
+      border-radius: 6px;
+      object-fit: cover;
+      vertical-align: middle;
+    }
+
+    /* 房型管理：grid 卡片 */
+    .room-admin-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .room-admin-card {
+      background: var(--c-bg);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--c-line);
+      box-shadow: var(--shadow-soft);
+      transition: transform .2s;
+    }
+    .room-admin-card:hover { transform: translateY(-4px); }
+    .room-admin-card.disabled { opacity: 0.5; }
+    .room-admin-card img { width: 100%; height: 160px; object-fit: cover; display: block; background: var(--c-cream); }
+    .room-admin-card .body { padding: 18px; }
+    .room-admin-card h4 { font-size: 18px; margin-bottom: 6px; }
+    .room-admin-card .meta { color: var(--c-ink-soft); font-size: 13px; margin-bottom: 12px; }
+    .room-admin-card .actions { display: flex; gap: 8px; }
+
+    /* ===== 日曆 ===== */
+    .calendar-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .calendar-controls .month-label {
+      font-family: var(--font-display);
+      font-size: 24px;
+      color: var(--c-forest);
+      min-width: 200px;
+    }
+
+    .calendar {
+      background: var(--c-bg);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      border: 1px solid var(--c-line);
+      box-shadow: var(--shadow-soft);
+      overflow-x: auto;
+    }
+    .calendar-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 800px;
+    }
+    .calendar-table th, .calendar-table td {
+      border: 1px solid var(--c-line);
+      padding: 0;
+      text-align: center;
+      font-size: 13px;
+    }
+    .calendar-table th {
+      padding: 10px;
+      background: var(--c-cream);
+      font-weight: 600;
+      color: var(--c-ink-soft);
+      letter-spacing: 1px;
+    }
+    .calendar-table th.room-col {
+      text-align: left;
+      padding-left: 16px;
+      width: 160px;
+      min-width: 160px;
+    }
+    .calendar-table td.room-name {
+      text-align: left;
+      padding: 12px 16px;
+      font-weight: 500;
+      color: var(--c-forest);
+      background: var(--c-bg-warm);
+      font-family: var(--font-display);
+    }
+    .calendar-table td.day {
+      height: 50px;
+      width: 38px;
+      position: relative;
+      cursor: default;
+    }
+    .calendar-table td.day.weekend { background: #faf3e8; }
+    .calendar-table td.day.today { background: rgba(200, 122, 74, 0.1); }
+    .calendar-table td.day .booked {
+      position: absolute;
+      inset: 4px;
+      background: var(--c-clay);
+      border-radius: 4px;
+      color: white;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      letter-spacing: 0;
+    }
+    .calendar-table td.day .booked.cancelled { background: var(--c-line); color: var(--c-ink-soft); text-decoration: line-through; }
+    .calendar-table td.day .booked:hover { background: var(--c-clay-dark); }
+    .calendar-table tbody tr:nth-child(odd) td.room-name { background: var(--c-bg-warm); }
+
+    .calendar-legend {
+      display: flex;
+      gap: 24px;
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--c-ink-soft);
+      flex-wrap: wrap;
+    }
+    .calendar-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .calendar-legend .swatch { width: 14px; height: 14px; border-radius: 3px; }
+
+    @media (max-width: 768px) {
+      .admin-wrap { flex-direction: column; }
+      .sidebar { width: 100%; height: auto; position: static; }
+      .sidebar nav { display: flex; overflow-x: auto; }
+      .sidebar nav a { white-space: nowrap; padding: 12px 16px; }
+      .sidebar .logout { position: static; margin: 12px 28px; }
+      .main { padding: 20px 16px; max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-wrap">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="logo">山宿 <span>Homestay</span></span>
+        <small>ADMIN PANEL</small>
+      </div>
+      <nav>
+        <a class="tab-link active" data-tab="dashboard"><span class="icon">📊</span> 總覽</a>
+        <a class="tab-link" data-tab="orders"><span class="icon">📋</span> 訂單管理</a>
+        <a class="tab-link" data-tab="rooms"><span class="icon">🏡</span> 房型管理</a>
+        <a class="tab-link" data-tab="calendar"><span class="icon">📅</span> 訂房日曆</a>
+      </nav>
+      <button class="logout" id="btnLogout">登出</button>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+
+      <!-- 總覽 -->
+      <section class="tab-page active" id="tab-dashboard">
+        <div class="page-title-row">
+          <div>
+            <div class="page-subtitle">Dashboard</div>
+            <h1 class="page-title">總 覽</h1>
+          </div>
+        </div>
+        <div class="stats-grid" id="statsGrid"></div>
+
+        <div style="margin-top: 32px;">
+          <h3 style="margin-bottom: 16px; font-size: 20px;">最近 5 筆訂單</h3>
+          <div id="recentOrders"></div>
+        </div>
+      </section>
+
+      <!-- 訂單管理 -->
+      <section class="tab-page" id="tab-orders">
+        <div class="page-title-row">
+          <div>
+            <div class="page-subtitle">Orders</div>
+            <h1 class="page-title">訂單管理</h1>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <select id="orderFilter" style="padding: 10px 14px; border: 1.5px solid var(--c-line); border-radius: 8px; background: var(--c-bg); font-family: var(--font-body);">
+              <option value="">全部狀態</option>
+              <option value="confirmed">已確認</option>
+              <option value="checked-in">已入住</option>
+              <option value="cancelled">已取消</option>
+            </select>
+          </div>
+        </div>
+        <div id="ordersTableWrap"></div>
+      </section>
+
+      <!-- 房型管理 -->
+      <section class="tab-page" id="tab-rooms">
+        <div class="page-title-row">
+          <div>
+            <div class="page-subtitle">Rooms</div>
+            <h1 class="page-title">房型管理</h1>
+          </div>
+          <button class="btn btn-accent" id="btnAddRoom">+ 新增房型</button>
+        </div>
+        <div class="room-admin-grid" id="roomsAdminGrid"></div>
+      </section>
+
+      <!-- 日曆 -->
+      <section class="tab-page" id="tab-calendar">
+        <div class="page-title-row">
+          <div>
+            <div class="page-subtitle">Calendar</div>
+            <h1 class="page-title">訂房日曆</h1>
+          </div>
+        </div>
+        <div class="calendar-controls">
+          <button class="btn btn-outline btn-sm" id="btnPrevMonth">← 上個月</button>
+          <span class="month-label" id="monthLabel"></span>
+          <button class="btn btn-outline btn-sm" id="btnNextMonth">下個月 →</button>
+          <button class="btn btn-ghost btn-sm" id="btnToday">回到今日</button>
+        </div>
+        <div class="calendar" id="calendarArea"></div>
+        <div class="calendar-legend">
+          <span><span class="swatch" style="background: var(--c-clay);"></span> 已被預訂</span>
+          <span><span class="swatch" style="background: var(--c-bg);"></span> 空房</span>
+          <span><span class="swatch" style="background: rgba(200, 122, 74, 0.1);"></span> 今天</span>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- 房型編輯 Modal -->
+  <div class="modal-backdrop" id="roomModal">
+    <div class="modal">
+      <h2 id="roomModalTitle">新增房型</h2>
+      <p class="modal-subtitle">填寫房型資訊</p>
+      <div class="field"><label>名稱</label><input type="text" id="rmName" placeholder="例：檜木雙人房"></div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+        <div class="field">
+          <label>房型分類</label>
+          <select id="rmType">
+            <option>單人</option><option>雙人</option><option>家庭</option><option>獨棟</option>
+          </select>
+        </div>
+        <div class="field"><label>容納人數</label><input type="number" id="rmCapacity" min="1" max="20" value="2"></div>
+        <div class="field"><label>每晚價格</label><input type="number" id="rmPrice" min="0" value="3000"></div>
+      </div>
+      <div class="field"><label>圖片網址</label><input type="text" id="rmImage" placeholder="https://..."></div>
+      <div class="field"><label>特色 (用逗號分隔)</label><input type="text" id="rmFeatures" placeholder="檜木浴池, 山景陽台"></div>
+      <div class="field"><label>描述</label><textarea id="rmDesc"></textarea></div>
+      <div class="field" style="flex-direction: row; align-items: center; gap: 8px;">
+        <input type="checkbox" id="rmActive" checked style="width: 18px; height: 18px;">
+        <label for="rmActive" style="margin: 0;">啟用此房型（讓顧客可見）</label>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="btnRmCancel">取消</button>
+        <button class="btn btn-primary" id="btnRmSave">儲存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 訂單詳情 Modal -->
+  <div class="modal-backdrop" id="orderDetailModal">
+    <div class="modal">
+      <h2>訂單詳情</h2>
+      <div id="orderDetailContent"></div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="btnOrderDetailClose">關閉</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>

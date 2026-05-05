@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的訂單 — 山宿 Homestay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .page-header {
+      background: linear-gradient(135deg, var(--c-forest) 0%, var(--c-forest-light) 100%);
+      color: var(--c-bg);
+      padding: 80px 40px 60px;
+      text-align: center;
+    }
+    .page-header h1 { color: var(--c-bg); font-size: 42px; letter-spacing: 4px; margin-bottom: 8px; }
+    .page-header p { color: var(--c-cream); letter-spacing: 2px; }
+
+    .search-bar {
+      max-width: 720px;
+      margin: -40px auto 40px;
+      background: var(--c-bg);
+      padding: 24px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-deep);
+      display: flex;
+      gap: 12px;
+      align-items: end;
+      border: 1px solid var(--c-line);
+    }
+    .search-bar .field { flex: 1; margin: 0; }
+
+    .order-card {
+      background: var(--c-bg);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--c-line);
+      box-shadow: var(--shadow-soft);
+      padding: 28px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .order-card.cancelled { opacity: 0.6; }
+    .order-card.cancelled::after {
+      content: "已取消";
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      font-family: var(--font-display);
+      font-size: 60px;
+      color: var(--c-error);
+      opacity: 0.15;
+      transform: rotate(-15deg);
+      pointer-events: none;
+    }
+    .order-id {
+      font-family: var(--font-display);
+      font-size: 24px;
+      letter-spacing: 3px;
+      color: var(--c-clay);
+      margin-bottom: 8px;
+    }
+    .order-room { font-family: var(--font-display); font-size: 20px; color: var(--c-forest); margin-bottom: 16px; }
+    .order-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 16px;
+      margin: 20px 0;
+      padding: 20px;
+      background: var(--c-bg-warm);
+      border-radius: var(--radius-md);
+    }
+    .order-grid div small { display: block; color: var(--c-ink-soft); font-size: 12px; letter-spacing: 1px; margin-bottom: 4px; }
+    .order-grid div strong { font-size: 16px; color: var(--c-ink); }
+    .order-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 16px;
+      border-top: 1px dashed var(--c-line);
+    }
+    .order-total { font-family: var(--font-display); font-size: 22px; color: var(--c-forest); }
+  </style>
+</head>
+<body>
+
+  <header class="navbar">
+    <a href="index.html" class="logo">山宿 <span>Homestay</span></a>
+    <nav>
+      <a href="index.html">回首頁</a>
+      <a href="my-orders.html">我的訂單</a>
+      <a href="admin-login.html">管理者</a>
+    </nav>
+  </header>
+
+  <section class="page-header">
+    <h1>我的訂單</h1>
+    <p>輸入訂單編號或手機號碼查詢</p>
+  </section>
+
+  <div class="search-bar">
+    <div class="field">
+      <label>訂單編號 / 手機號碼</label>
+      <input type="text" id="searchKeyword" placeholder="例如：SS202605030001 或 0912345678">
+    </div>
+    <button class="btn btn-primary" id="btnSearch">查 詢</button>
+  </div>
+
+  <div class="container-narrow" id="resultArea">
+    <div class="empty-state">
+      <h3>輸入您的訂單編號或手機號碼</h3>
+      <p>即可查詢、取消您的訂房</p>
+    </div>
+  </div>
+
+  <!-- 取消確認 -->
+  <div class="modal-backdrop" id="cancelModal">
+    <div class="modal" style="text-align: center;">
+      <div style="font-size: 40px;">😢</div>
+      <h2>確定要取消訂房？</h2>
+      <p class="modal-subtitle" id="cancelOrderInfo"></p>
+      <p style="background: #f5d8d3; color: var(--c-error); padding: 14px; border-radius: 10px; margin: 16px 0; font-size: 14px;">
+        提醒：依取消政策，入住前 3 天內取消將無法退費
+      </p>
+      <div class="modal-actions" style="justify-content: center;">
+        <button class="btn btn-ghost" id="btnCancelClose">再想想</button>
+        <button class="btn btn-danger" id="btnConfirmCancel">確定取消</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <footer style="background: var(--c-forest); color: var(--c-cream); padding: 30px; text-align: center; letter-spacing: 2px;">
+    <small style="opacity: 0.7;">© 2026 山宿 Homestay</small>
+  </footer>
+
+  <script type="module" src="js/orders.js"></script>
+</body>
+</html>
