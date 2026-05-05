@@ -28,7 +28,7 @@ const firebaseConfig = {
   appId: "1:818426895986:web:4ea220f5f04957ef6aaceb"
 };
 // 👇 把這裡換成你的 Gemini API Key
-export const GEMINI_API_KEY = "YOUR_GEMINI_API_KEY";
+export const GEMINI_API_KEY = "AIzaSyCavLmqeEUniBTAjFMNU4G-o-UGytjl0dM";
 
 // 是否處於 demo 模式（沒填 Firebase 設定就用本地假資料）
 export const IS_DEMO_MODE = firebaseConfig.apiKey === "YOUR_API_KEY";
